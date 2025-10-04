@@ -1,4 +1,3 @@
-{
 "surrenderReasons": [
 	   	{
 			"name":"name",
@@ -6,5 +5,3 @@
 	   		"tenantId":"default"
 	   	}
    	]
-   	
-   	}
