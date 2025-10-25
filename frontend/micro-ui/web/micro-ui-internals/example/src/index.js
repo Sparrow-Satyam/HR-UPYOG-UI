@@ -10,12 +10,14 @@ import { initFSMComponents } from "@upyog/digit-ui-module-fsm";
 import { initPGRComponents } from "@upyog/digit-ui-module-pgr";
 import { initDSSComponents } from "@upyog/digit-ui-module-dss";
 import { initHRMSComponents } from "@upyog/digit-ui-module-hrms";
+import { initFinanceComponents } from "@mcd89/digit-ui-module-finance";
 import { initReceiptsComponents, ReceiptsModule } from "@upyog/digit-ui-module-receipts";
 // import { initReportsComponents } from "@upyog/digit-ui-module-reports";
 import { initMCollectComponents } from "@upyog/digit-ui-module-mcollect";
 import { initTLComponents } from "@upyog/digit-ui-module-tl";
 import { PaymentModule, PaymentLinks, paymentConfigs } from "@upyog/digit-ui-module-common";
 import { HRMSModule } from "@upyog/digit-ui-module-hrms";
+import { FinanceModule } from "@mcd89/digit-ui-module-finance";
 import { initOBPSComponents } from "@upyog/digit-ui-module-obps";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
 import { initNOCComponents } from "@upyog/digit-ui-module-noc";
@@ -60,6 +62,7 @@ const enabledModules = [
   "DSS",
   "MCollect",
   "HRMS",
+  "Finance",
   "TL",
   "Receipts",
   "Reports",
@@ -117,6 +120,7 @@ const initDigitUI = () => {
     MCollectLinks,
     MCollectModule,
     HRMSModule,
+    FinanceModule,
     ReceiptsModule,
     BillsModule,
     PTRModule,
@@ -146,6 +150,7 @@ const initDigitUI = () => {
   initDSSComponents();
   initMCollectComponents();
   initHRMSComponents();
+  initFinanceComponents();
   initTLComponents();
   initReceiptsComponents();
   // initReportsComponents();
