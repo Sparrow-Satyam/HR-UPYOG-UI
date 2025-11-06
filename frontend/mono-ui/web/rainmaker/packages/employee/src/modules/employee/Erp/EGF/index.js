@@ -79,7 +79,7 @@ async fetchTTL() {
     clearInterval(this.countdownInterval);
 
     // Show alert or toast
-    alert("Your session has expired. Please log in again.");
+    // alert("Your session has expired. Please log in again.");
 
     try {
     // Attempt Redux logout (await ensures it completes)
@@ -125,8 +125,13 @@ async fetchTTL() {
     erp_url,
     tenantId = getTenantId();
     
-    // ✅ Get ERP URL from common method
-    erp_url = this.getFinanceIframeURL(menuUrl);
+    //Reading domain name from the request url
+    domainurl = hostname.substring(hostname.indexOf(".") + 1);
+    // Reading environment name (ex: dev, qa, uat, fin-uat etc) from the globalconfigs if exists else reading from the .env file
+    finEnv = this.globalConfigExists() ? window.globalConfigs.getConfig("FIN_ENV") : process.env.REACT_APP_FIN_ENV;
+    // Preparing finance subdomain url using the above environment name and the domain url
+    subdomainurl = !!(finEnv) ? "-" + finEnv + "." + domainurl : "." + domainurl;
+    erp_url = loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
     console.log("Finance Iframe URL:", erp_url);
     return (
       <div style={{ position: "relative", minHeight: winheight }}>
@@ -227,49 +232,28 @@ async fetchTTL() {
   }
 
   /** Handle Finance module load */
-  /** Handle Finance module load */
   loadFinanceIframe() {
     const menuUrl = this.props.location.pathname;
-    const erp_url = this.getFinanceIframeURL(menuUrl);
+    const loc = window.location;
+    const hostname = loc.hostname;
+    const domainurl = hostname.substring(hostname.indexOf(".") + 1);
+
+    // Read environment name from global configs or .env file
+    const finEnv = this.globalConfigExists() ? window.globalConfigs.getConfig("FIN_ENV") : process.env.REACT_APP_FIN_ENV;
+
+    // Construct subdomain dynamically
+    const subdomainurl = finEnv ? `-${finEnv}.${domainurl}` : `.${domainurl}`;
+
+    const erp_url =
+      loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
 
     this.setState({ isLoading: true, lastUrl: menuUrl }, () => {
       const form = document.getElementById("erp_form");
       if (form) form.action = erp_url;
       this.submitIframeForm();
     });
-
-    console.log("Loading Finance Iframe URL:", erp_url);
+    // console.log("Loading Finance Iframe URL:", erp_url);
   }
-
-
-  /** Common method to compute ERP URL dynamically */
-  getFinanceIframeURL(menuUrl) {
-    const loc = window.location;
-    const hostname = loc.hostname;
-    const domainurl = hostname.substring(hostname.indexOf(".") + 1);
-
-    // Read environment name (ex: dev, qa, uat, fin-uat etc)
-    const finEnv = this.globalConfigExists()
-      ? window.globalConfigs.getConfig("FIN_ENV")
-      : process.env.REACT_APP_FIN_ENV;
-
-    // Get tenant city code (e.g. "pg" from "pb.pg")
-    const tenantCity = getTenantId().split(".")[1];
-
-    // Construct base subdomain
-    const subdomainurl = hostname.substring(hostname.indexOf(".") + 1);
-
-    // Local environment check
-    const isLocal = hostname.includes("localhost");
-    // alert(hostname);
-    // Final URL
-    const erp_url = isLocal
-      ? `${loc.protocol}//${tenantCity}.${subdomainurl}:9090${menuUrl}`
-      : `${loc.protocol}//${tenantCity}.${subdomainurl}${menuUrl}`;
-
-    return erp_url;
-  }
-
   onMessage = (event) => {
     if (event.data != "close") return;
     // document.getElementById('erp_iframe').style.display='none';
